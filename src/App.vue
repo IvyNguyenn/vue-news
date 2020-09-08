@@ -32,14 +32,20 @@ export default {
   },
   mounted() {
     this.fetchData();
+    setInterval(function () {
+      this.fetchData();
+    }, 30000);
   },
   methods: {
-    fetchData() {
+    fetchData(params) {
       this.loading = true;
       instanceAxios({
         method: "GET",
         baseURL: API_URL,
         url: "/news",
+        params: {
+          category: params ? params.category : null,
+        },
         headers: {
           "Access-Control-Allow-Origin": "*",
           "Content-Type": "application/json",
@@ -53,9 +59,10 @@ export default {
         })
         .catch((err) => console.log(err));
     },
-    onRefresh() {
+    onRefresh(value) {
+      console.log(value);
       this.listNews = [];
-      this.fetchData();
+      this.fetchData({ category: value });
     },
   },
 };
